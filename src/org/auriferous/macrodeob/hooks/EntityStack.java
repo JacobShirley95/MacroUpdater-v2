@@ -2,6 +2,7 @@ package org.auriferous.macrodeob.hooks;
 
 import java.util.List;
 
+import org.auriferous.macrodeob.hooks.record.ClassHook;
 import org.auriferous.macrodeob.hooks.record.HooksMap;
 import org.auriferous.macrodeob.transformers.base.TransformClassNode;
 import org.auriferous.macrodeob.utils.InsnSearcher;
@@ -21,6 +22,11 @@ public class EntityStack extends Hook{
 				if (!results.isEmpty() && ((FieldInsnNode)results.get(0)[0]).desc.equals("Ljava/util/Stack;")) {
 					if (((MethodInsnNode)results.get(0)[2]).name.equals("push")) {
 						HooksMap.CLIENT_HOOKS_MAP.addClientHook("EntityStack", results.get(0)[0]);
+						
+						FieldInsnNode fin = (FieldInsnNode) finder.searchSingle("putfield");
+						ClassHook stackNode = HooksMap.CLIENT_HOOKS_MAP.addClassHook("StackNode", fin.owner);
+						stackNode.addFieldHook("Entity", fin);
+						
 						return true;
 					}
 				}
