@@ -130,6 +130,10 @@ public abstract class Hook {
 		return null;
 	}
 	
+	protected String getDesc(MethodInsnNode mn) {
+		return Type.getReturnType(mn.desc).getClassName().replaceAll("\\[\\]", "");
+	}
+	
 	protected String getDesc(FieldInsnNode fin) {
 		return Type.getType(fin.desc).getClassName().replaceAll("\\[\\]", "");
 	}

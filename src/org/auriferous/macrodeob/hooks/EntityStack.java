@@ -8,27 +8,33 @@ import org.auriferous.macrodeob.transformers.base.TransformClassNode;
 import org.auriferous.macrodeob.utils.InsnSearcher;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class EntityStack extends Hook{
+public class EntityStack extends Hook {
 
 	@Override
 	public boolean accept(TransformClassNode tcn) {
 		for (MethodNode mn : tcn.methods) {
-			if (isStatic(mn) && mn.instructions.size() > 0) {
-				InsnSearcher finder = new InsnSearcher(mn);
-				List<AbstractInsnNode[]> results = finder.search("getstatic aload([0-9])+ invokevirtual");
-				if (!results.isEmpty() && ((FieldInsnNode)results.get(0)[0]).desc.equals("Ljava/util/Stack;")) {
-					if (((MethodInsnNode)results.get(0)[2]).name.equals("push")) {
-						HooksMap.CLIENT_HOOKS_MAP.addClientHook("EntityStack", results.get(0)[0]);
-						
-						FieldInsnNode fin = (FieldInsnNode) finder.searchSingle("putfield");
-						ClassHook stackNode = HooksMap.CLIENT_HOOKS_MAP.addClassHook("StackNode", fin.owner);
-						stackNode.addFieldHook("Entity", fin);
-						
-						return true;
-					}
+			if (isStatic(mn) && mn.instructions.size() > 0
+					&& mn.desc.startsWith("(I")) {
+				LdcInsnNode ldc = (LdcInsnNode) containsLDC(mn, "Failure");
+				if (ldc != null) {
+					InsnSearcher finder = new InsnSearcher(mn);
+
+					FieldInsnNode getstatic = (FieldInsnNode) finder
+							.searchSingle("getstatic", 1);
+					MethodInsnNode invoke = (MethodInsnNode) finder
+							.searchSingle("invokevirtual", getstatic);
+
+					HooksMap.CLIENT_HOOKS_MAP.addClientHook("EntityStack",
+							invoke).addLink(getstatic);
+					HooksMap.CLIENT_HOOKS_MAP.addClassHook("WorldObjects",
+							getDesc(invoke));
+
+					return true;
 				}
 			}
 		}
