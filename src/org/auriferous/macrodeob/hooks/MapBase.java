@@ -33,12 +33,10 @@ public class MapBase extends Hook {
 							.searchSingle("invokevirtual", results.get(0)[0]));
 
 					InsnSearcher finder2 = new InsnSearcher(mn2);
-					ClassHook gameWorld = HooksMap.CLIENT_HOOKS_MAP.addClassHook(
-							"GameWorld",
-							getDesc((FieldInsnNode) results.get(0)[0]));
+					FieldInsnNode gameWorld = (FieldInsnNode) results.get(0)[0];
 					
 					FieldInsnNode fin = (FieldInsnNode) finder2.searchSingle("getfield");
-					gameWorld.addFieldHook("MapBase", fin);
+					HooksMap.CLIENT_HOOKS_MAP.addClassHook("Client", "client").addFieldHook("MapBase", fin).addLink(gameWorld);
 					ClassNode mapBaseClazz = Main.rsClassLoader.loadClass(getDesc(fin));
 					
 					for (MethodNode mn3 : mapBaseClazz.methods) {

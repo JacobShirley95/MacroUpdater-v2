@@ -58,7 +58,7 @@ public class Main {
 		hooks.put(new OptionsMenu(), 0);
 		hooks.put(new TileHeight(), 0);
 		hooks.put(new RSCharacterFields(), 0);
-		hooks.put(new EntityStack(), 0);
+		hooks.put(new WorldObjectsField(), 0);
 		hooks.put(new WorldObjects(), 0);
 		hooks.put(new DoorDecor(), 0);
 		

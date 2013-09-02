@@ -13,7 +13,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class EntityStack extends Hook {
+public class WorldObjectsField extends Hook {
 
 	@Override
 	public boolean accept(TransformClassNode tcn) {
@@ -29,10 +29,8 @@ public class EntityStack extends Hook {
 					MethodInsnNode invoke = (MethodInsnNode) finder
 							.searchSingle("invokevirtual", getstatic);
 
-					HooksMap.CLIENT_HOOKS_MAP.addClientHook("EntityStack",
+					HooksMap.CLIENT_HOOKS_MAP.addClientHook("WorldObjects",
 							invoke).addLink(getstatic);
-					HooksMap.CLIENT_HOOKS_MAP.addClassHook("WorldObjects",
-							getDesc(invoke));
 
 					return true;
 				}

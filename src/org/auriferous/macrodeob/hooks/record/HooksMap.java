@@ -49,8 +49,8 @@ public class HooksMap {
 		addClassHook("Client", "client").addStaticFieldSetterHook(hookName, fin);
 	}
 	
-	public void addClientHook(String hookName, FieldInsnNode fin) {
-		addClassHook("Client", "client").addStaticFieldHook(hookName, fin);
+	public HookRecord addClientHook(String hookName, FieldInsnNode fin) {
+		return addClassHook("Client", "client").addStaticFieldHook(hookName, fin);
 	}
 	
 	public HookRecord addClientHook(String hookName, MethodInsnNode min) {
