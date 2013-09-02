@@ -18,7 +18,7 @@ public class Viewport extends Hook {
 				InsnSearcher finder = new InsnSearcher(mn);
 				List<AbstractInsnNode[]> results = finder.search("getfield");
 				
-				ClassHook transform3d = HooksMap.CLIENT_HOOKS_MAP.addClassHook("Transform3D", tcn);
+				ClassHook transform3d = HooksMap.CLIENT_HOOKS_MAP.addClassHook("Viewport", tcn);
 				transform3d.addFieldHook("Float1", results.get(0)[0]);
 				transform3d.addFieldHook("Float2", results.get(1)[0]);
 				transform3d.addFieldHook("Float3", results.get(2)[0]);

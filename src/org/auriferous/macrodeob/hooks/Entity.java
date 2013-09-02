@@ -57,7 +57,7 @@ public class Entity extends Hook {
 									if (containsLDC(mn2, " - ") != null) {
 										FieldInsnNode fin = (FieldInsnNode) result[3];
 
-										animeHook.addFieldHook("3DTransform",
+										animeHook.addFieldHook("Viewport",
 												fin);
 
 										return true;
