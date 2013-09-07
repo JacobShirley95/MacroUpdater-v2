@@ -28,7 +28,7 @@ public class SModel extends Hook {
 							.search("ldc fastore");
 					for (AbstractInsnNode[] result : results) {
 						if (((LdcInsnNode)result[0]).cst.toString().equals("-999999.0")) {
-							System.out.println("DSFSDF");
+
 							results = finder.searchBackward("getfield", result[0]);
 							Collections.reverse(results);
 							
@@ -66,6 +66,12 @@ public class SModel extends Hook {
 							
 							results = finder.search("getfield");
 							ch.addFieldHook("RenderData", results.get(6)[0]).addLink(renderer);
+							
+							
+							ch.addFieldHook("ShowCount", finder.searchSingle("getfield", result[0], 0));
+							ch.addFieldHook("Inds1", finder.searchSingle("getfield", result[0], 2));
+							ch.addFieldHook("Inds2", finder.searchSingle("getfield", result[0], 4));
+							ch.addFieldHook("Inds3", finder.searchSingle("getfield", result[0], 6));
 							
 							return true;
 						}

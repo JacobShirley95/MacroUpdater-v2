@@ -61,6 +61,7 @@ public class Main {
 		hooks.put(new WorldObjectsField(), 0);
 		hooks.put(new WorldObjects(), 0);
 		hooks.put(new DoorDecor(), 0);
+		hooks.put(new InteractableObject(), 0);
 		
 		int MAX_RUN_LEVEL = 1;
 		int count = hooks.size()-1;

@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class DoorDecor extends Hook {
+public class InteractableObject extends Hook {
 
 	@Override
 	public boolean accept(TransformClassNode tcn) {
@@ -29,15 +29,17 @@ public class DoorDecor extends Hook {
 			for (AbstractInsnNode[] result : results) {
 				if ((int) ((LdcInsnNode) result[1]).cst == 65536) {
 					if (!isStatic(mn) && mn.name.equals("<init>")
-							&& Type.getArgumentTypes(mn.desc).length < 16) {
-
-						HooksMap.CLIENT_HOOKS_MAP.addClassHook("WallDecor",
-								tcn.superName);
+							&& Type.getArgumentTypes(mn.desc).length >= 16) {
+						System.out.println("DSFDSF");
 						ClassHook ch = HooksMap.CLIENT_HOOKS_MAP.addClassHook(
-								"DoorDecor", tcn);
+								"InteractableObject", tcn);
+						
+						ch.addFieldHook("Model",
+								finder.searchSingle("putfield", result[1]));
 						
 						FieldInsnNode f = (FieldInsnNode) finder.searchSingle(
 								"putfield", 1);
+						
 						for (MethodNode mn2 : tcn.methods)
 							if (!isStatic(mn2)) {
 								InsnSearcher finder2 = new InsnSearcher(mn2);
@@ -53,49 +55,10 @@ public class DoorDecor extends Hook {
 												.search("iconst_0 aaload");
 										if (!results2.isEmpty()) {
 											ch.addFieldHook("ID", f2);
-
-											MethodInsnNode min = (MethodInsnNode) finder2
-													.searchSingle(
-															"invokevirtual",
-															results2.get(0)[0]);
-											FieldInsnNode gamePos = (FieldInsnNode) finder2
-													.searchSingle("getfield",
-															min);
-
-											ClassHook entity = HooksMap.CLIENT_HOOKS_MAP
-													.addClassHook(
-															"Entity",
-															Main.rsClassLoader
-																	.loadClass(tcn.superName).superName);
-											entity.addFieldHook("WorldPos",
-													gamePos).addLink(min);
-
-											ClassHook gameCoord = HooksMap.CLIENT_HOOKS_MAP
-													.addClassHook("GameCoord",
-															getDesc(gamePos));
-
-											results2 = finder2.search(
-													"getfield",
-													gamePos.getNext());
-											ch.addFieldHook("Plane",
-													results2.get(0)[0]);
-
-											gameCoord.addFieldHook("X",
-													results2.get(2)[0]);
-											gameCoord.addFieldHook("Y",
-													results2.get(3)[0]);
-											gameCoord.addFieldHook("Z",
-													results2.get(4)[0]);
-
-											break;
 										}
 									}
 								}
 							}
-						ch.addFieldHook("Door",
-								finder.searchSingle("putfield", 5));
-						ch.addFieldHook("Model",
-								finder.searchSingle("putfield", result[1]));
 						return true;
 					}
 				}

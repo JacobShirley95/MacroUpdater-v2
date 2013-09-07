@@ -26,13 +26,24 @@ public class WorldObjects extends Hook{
 							if (!isStatic(mn2) && !mn2.name.equals("<init>")) {
 								finder = new InsnSearcher(mn2);
 								results = finder.search("getfield iconst_3 aaload");
+								ClassHook tile = null;
 								if (!results.isEmpty()) {
 									ch.addFieldHook("Tiles", results.get(0)[0]);
 									
 									results = finder.search("getfield dup getfield iconst_1 isub i2b");
 									FieldInsnNode fin = (FieldInsnNode) results.get(1)[0];
-									ClassHook tile = HooksMap.CLIENT_HOOKS_MAP.addClassHook("Tile", fin.owner);
+									tile = HooksMap.CLIENT_HOOKS_MAP.addClassHook("Tile", fin.owner);
 									tile.addFieldHook("WallDecor", fin);
+									
+									results = finder.search("getfield");
+									fin = (FieldInsnNode) results.get(3)[0];
+									FieldInsnNode fin2 = (FieldInsnNode) results.get(4)[0];
+									FieldInsnNode fin3 = (FieldInsnNode) results.get(8)[0];
+									
+									tile.addFieldHook("Interactable", fin);
+									ClassHook interactable = HooksMap.CLIENT_HOOKS_MAP.addClassHook("Interactable", getDesc(fin));
+									interactable.addFieldHook("Object", fin2);
+									interactable.addFieldHook("Next", fin3);
 								}
 							}
 						}
