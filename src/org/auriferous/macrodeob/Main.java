@@ -14,15 +14,16 @@ import org.auriferous.macrodeob.utils.RsClassLoader;
 public class Main {
 	private HashMap<Hook, Integer> hooks;
 	public static RsClassLoader rsClassLoader;
+	public static RsClassLoader dumpClassLoader;
 	public static HashMap<String, String> clientMapping = new HashMap<String, String>();
 
 	public Main() {
 		System.out.println("loading classes...");
-		loadClasses("C:/Users/Jake/workspace/Deobfuscator2/runescape-deob3.jar");
-		System.out.println("injecting hooks...");
+		loadClasses("../Deobfuscator2/runescape-deob3.jar", "../RsDecoder/runescape.jar");
+		System.out.println("finding and injecting hooks...");
 		injectHooks();
 		System.out.println("writing classes...");
-		writeClasses("runescape-deob3.jar");
+		writeClasses("runescape.jar");
 	}
 	
 	private void injectHooks() {
@@ -85,13 +86,15 @@ public class Main {
 			}
 		}
 		
-		Injector injector = new Injector(rsClassLoader, HooksMap.CLIENT_HOOKS_MAP, "org/macronite2/hooks/");
+		Injector injector = new Injector(dumpClassLoader, HooksMap.CLIENT_HOOKS_MAP, "org/macronite2/hooks/");
 		injector.injectAll();
 	}
 
-	private void loadClasses(String jarFile) {
+	private void loadClasses(String jarFile, String original) {
 		try {
 			rsClassLoader = new RsClassLoader(jarFile);
+			dumpClassLoader = new RsClassLoader(original);
+			dumpClassLoader.loadAll();
 			rsClassLoader.loadAll();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -100,7 +103,7 @@ public class Main {
 
 	private void writeClasses(String output) {
 		try {
-			rsClassLoader.dumpJar(output);
+			dumpClassLoader.dumpJar(output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

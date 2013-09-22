@@ -49,20 +49,31 @@ public class BlockEntity extends Hook {
 						List<AbstractInsnNode[]> results = finder
 								.search("getfield");
 						if (!results.isEmpty()) {
-							FieldInsnNode locX1 = (FieldInsnNode) results.get(1)[0];
-							FieldInsnNode locX2 = (FieldInsnNode) results.get(2)[0];
-							FieldInsnNode locY1 = (FieldInsnNode) results.get(3)[0];
-							FieldInsnNode locY2 = (FieldInsnNode) results.get(4)[0];
-							
-							blockEntityHook.addFieldHook("LocX1", locX1);
-							blockEntityHook.addFieldHook("LocX2", locX2);
-							blockEntityHook.addFieldHook("LocY1", locY1);
-							blockEntityHook.addFieldHook("LocY2", locY2);
-							
-							FieldInsnNode plane = (FieldInsnNode)results.get(7)[0];
-							ClassHook movableHook = HooksMap.CLIENT_HOOKS_MAP.addClassHook(
-									"MovableEntity", plane);
-							movableHook.addFieldHook("Plane", plane);
+							int i = 0;
+							for (AbstractInsnNode[] result : results) {
+								FieldInsnNode fin = (FieldInsnNode)result[0];
+								if (fin.desc.equals("S") && fin.owner.equals(tcn.name)) {
+									switch (i) {
+									case 0: {blockEntityHook.addFieldHook("LocX1", result[0]);break;}
+									case 1: {blockEntityHook.addFieldHook("LocX2", result[0]);break;}
+									case 2: {blockEntityHook.addFieldHook("LocY1", result[0]);break;}
+									case 3: {blockEntityHook.addFieldHook("LocY2", result[0]);break;}
+									}
+									i++;
+									if (i == 4)
+										break;
+								}
+							}
+							for (AbstractInsnNode[] result : results) {
+								FieldInsnNode fin = (FieldInsnNode)result[0];
+								if (fin.desc.equals("B") && fin.owner.equals(tcn.name)) {
+									FieldInsnNode plane = (FieldInsnNode)result[0];
+									ClassHook movableHook = HooksMap.CLIENT_HOOKS_MAP.addClassHook(
+											"MovableEntity", plane);
+									movableHook.addFieldHook("Plane", plane);
+									break;
+								}
+							}
 							
 							return true;
 						}

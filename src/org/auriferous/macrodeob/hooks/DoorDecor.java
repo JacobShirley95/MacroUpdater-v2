@@ -54,38 +54,7 @@ public class DoorDecor extends Hook {
 										if (!results2.isEmpty()) {
 											ch.addFieldHook("ID", f2);
 
-											MethodInsnNode min = (MethodInsnNode) finder2
-													.searchSingle(
-															"invokevirtual",
-															results2.get(0)[0]);
-											FieldInsnNode gamePos = (FieldInsnNode) finder2
-													.searchSingle("getfield",
-															min);
-
-											ClassHook entity = HooksMap.CLIENT_HOOKS_MAP
-													.addClassHook(
-															"Entity",
-															Main.rsClassLoader
-																	.loadClass(tcn.superName).superName);
-											entity.addFieldHook("WorldPos",
-													gamePos).addLink(min);
-
-											ClassHook gameCoord = HooksMap.CLIENT_HOOKS_MAP
-													.addClassHook("GameCoord",
-															getDesc(gamePos));
-
-											results2 = finder2.search(
-													"getfield",
-													gamePos.getNext());
-											ch.addFieldHook("Plane",
-													results2.get(0)[0]);
-
-											gameCoord.addFieldHook("X",
-													results2.get(2)[0]);
-											gameCoord.addFieldHook("Y",
-													results2.get(3)[0]);
-											gameCoord.addFieldHook("Z",
-													results2.get(4)[0]);
+											
 
 											break;
 										}
